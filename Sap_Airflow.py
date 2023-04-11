@@ -57,7 +57,7 @@ DATE_FUNCTION=PythonOperator(
 
 def email_func(**kwargs):
     load_date=kwargs['load_date']
-    Notification_Email.failure_email(email_list,"KRNOSPBI_DAG_KRONOS_TABLES_EXTRACT",load_date)
+    Notification_Email.failure_email(email_list,"SAP TABLES EXTRACT",load_date)
         
 Email_notification=PythonOperator(
 task_id="Email_notification",
@@ -71,7 +71,7 @@ dag=dag)
     
 start_dataflow_job=BashOperator(
     task_id=table+"_start_dataflow_job",
-    bash_command='''job_date=$(date '+%Y-%m-%d-%H-%M-%S'); python3 /home/airflow/gcs/dags/sql_server_to_gcs.py --runner DataflowRunner --project project_name --region asia-south1 --temp_location gs://bucket-name/temp --network  --max_num_workers 5 --job_name {5}-$job_date --worker_machine_type {7} --service_account_email  service_account-name --setup_file /home/airflow/gcs/dags/setup.py --df_bucket bucket_name '''
+    bash_command='''job_date=$(date '+%Y-%m-%d-%H-%M-%S'); python3 /home/airflow/gcs/dags/Sap_dataflow_job.py --runner DataflowRunner --project project_name --region asia-south1 --temp_location gs://bucket-name/temp --network  --max_num_workers 5 --job_name {5}-$job_date --worker_machine_type {7} --service_account_email  service_account-name --setup_file /home/airflow/gcs/dags/setup.py --df_bucket bucket_name '''
     dag=dag)
 
 DATE_FUNCTION>>start_dataflow_job>>Email_notification
